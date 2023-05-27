@@ -4,7 +4,7 @@ import queryMovies from 'services/queryAPI';
 import css from './movies.module.css';
 import Gallery from 'components/gallery/Gallery';
 
-const Movies = () => {
+function Movies() {
 
     const [movies, setMovies] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,22 +18,23 @@ const Movies = () => {
         if (movieId !== '') {
         searchMovie()
         }
-    }, [])
+    }, [movieId, searchMovie])
     
-    function searchMovie () {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    function searchMovie() {
         queryMovies(fetchParams, query)
             .then(response => setMovies(response.results))
             .catch(error => { console.log(error) })
     };
 
-    const updateQueryString = (e) => {
+    function updateQueryString(e) {
         if (e.target.value === '') {
             return setSearchParams({})
         }
         setSearchParams({movieId: e.target.value})
     };
 
-    const handleKeyDown = (e) => {
+    function handleKeyDown(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             searchMovie();
@@ -47,8 +48,7 @@ const Movies = () => {
                     <input
                     className={css.searchForm__input}
                     type="text"
-                        value={movieId}
-                        placeholder='Search movie'
+                    value={movieId}
                     onChange={updateQueryString}
                     onKeyDown={handleKeyDown}
                     />
