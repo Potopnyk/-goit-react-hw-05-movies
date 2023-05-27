@@ -1,0 +1,55 @@
+.info a {
+    color: red;
+    font-size: 18px;
+    line-height: 1.14;
+    font-weight: 700;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 30px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-family: "Playfair Display", serif;
+    &:hover{
+        color: #d94b0a;
+    }
+    
+}
+
+.info__content {
+    display: flex;
+}
+
+.info__content p {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.14;
+    margin-top: 20px;
+    max-width: auto;
+    width: 1100px;
+    color: red;
+}
+
+.info__title {
+    margin-left: 600px;
+    font-family: "Playfair Display", serif;
+    color: red;
+}
+
+.info__poster {
+    height: 100%;
+    width: 300px;
+    margin: 20px;
+}
+
+
+.subscriptions__section{
+    /* background-color: #d94b0a; */
+    background-image: url(./film_st1.jpg);
+    background-position: left;
+    font-family: "Playfair Display", serif;
+}
+
+.subscriptions{
+    font-size: 64px;
+}

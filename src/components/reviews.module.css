@@ -1,0 +1,12 @@
+.ul__review{
+    display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: ;
+        align-content: flex-start;
+}
+.list__review {
+    color: #583c2e;
+}
