@@ -1,62 +1,87 @@
-import { useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import queryMovies from 'services/queryAPI';
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { searchMovie } from 'services/serviceAPI';
 import css from './movies.module.css';
-import Gallery from 'components/gallery/Gallery';
 
-function Movies() {
+const Movies = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const [movies, setMovies] = useState([]);
-    const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('query');
 
-    const movieId = searchParams.get('movieId') ?? '';
+  const [query, setQuery] = useState(() => searchQuery || '');
 
-    const fetchParams = `search/movie?api_key=`;
-    const query = `&query=${movieId}`;
+  const location = useLocation();
 
-    useEffect(() => {
-        if (movieId !== '') {
-        searchMovie()
-        }
-    }, [movieId, searchMovie])
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    function searchMovie() {
-        queryMovies(fetchParams, query)
-            .then(response => setMovies(response.results))
-            .catch(error => { console.log(error) })
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const { results } = await searchMovie(searchQuery);
+        setData(results);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
+    if (searchQuery) {
+      getData();
+    }
+  }, [searchQuery]);
 
-    function updateQueryString(e) {
-        if (e.target.value === '') {
-            return setSearchParams({})
-        }
-        setSearchParams({movieId: e.target.value})
-    };
+  const handleChange = e => {
+    setQuery(e.target.value);
+  };
 
-    function handleKeyDown(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            searchMovie();
-        }   
-    };
+  const handleSubmit = e => {
+    e.preventDefault();
+    setSearchParams({ query: query });
+  };
 
-    return (
-        <div>
-            <div className={css.searchbar}>
-                <form className={css.searchForm}>
-                    <input
-                    className={css.searchForm__input}
-                    type="text"
-                    value={movieId}
-                    onChange={updateQueryString}
-                    onKeyDown={handleKeyDown}
-                    />
-                </form>
-            </div>
-            <Gallery object={movies} />
-        </div>
-    )
+  return (
+    <>
+      <div className={css.wrap}>
+
+        <form onSubmit={handleSubmit} className={css.movie__form}>
+          <input
+            value={query}
+            onChange={handleChange}
+            name="search"
+            type="text"
+            placeholder="Search movie"
+            className={css.movie__input}
+          />
+          <button type="submit" className={css.btn}>
+            Search
+          </button>
+        </form>
+      </div>
+      <ul className={css.list}>
+        {searchQuery ? (
+          loading ? (
+            'Loading...'
+          ) : data.length > 0 ? (
+            data.map(({ title, id }) => (
+              <li key={id} className={css.list__item}>
+                <Link className={css.link__item} state={{ from: location }} to={`/movies/${id}`}>
+                  {title}
+                </Link>
+              </li>
+            ))
+          ) : (
+            <p>
+              No movies with this title were found.
+            </p>
+          )
+        ) : (
+          <p className={css.descr}></p>
+        )}
+      </ul>
+    </>
+  );
 };
 
 export default Movies;
